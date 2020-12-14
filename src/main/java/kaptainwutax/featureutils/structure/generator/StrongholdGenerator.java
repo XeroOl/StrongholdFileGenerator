@@ -59,6 +59,8 @@ public class StrongholdGenerator {
 			if(this.getVersion().isOlderThan(MCVersion.v1_14))rand.nextInt();
 
 			startPiece = new Start(rand, (chunkX << 4) + 2, (chunkZ << 4) + 2);
+			startPiece.pieces.add(startPiece);
+			startPiece.tree.put(startPiece, new ArrayList<Stronghold.Piece>());
 			if(!shouldContinue.test(startPiece))return true;
 			this.pieceList.add(startPiece);
 
@@ -68,6 +70,8 @@ public class StrongholdGenerator {
 			while(!pieces.isEmpty() && !this.halted) {
 				int i = rand.nextInt(pieces.size());
 				Stronghold.Piece piece = pieces.remove(i);
+				startPiece.pieces.add(piece);
+				startPiece.tree.put(piece, new ArrayList<Stronghold.Piece>());
 				piece.populatePieces(this, startPiece, this.pieceList, rand);
 			}
 		} while((this.pieceList.isEmpty() || startPiece.portalRoom == null) && !this.halted);
@@ -76,7 +80,10 @@ public class StrongholdGenerator {
 			this.strongholdBox = BlockBox.empty();
 			this.pieceList.forEach(piece -> this.strongholdBox.encompass(piece.getBoundingBox()));
 		}
-
+		System.out.println("START");
+		System.out.println("worldSeed: " + worldSeed);
+		startPiece.printContents();
+		System.out.println("END");
 		return this.halted;
 	}
 
@@ -109,10 +116,11 @@ public class StrongholdGenerator {
 	public Stronghold.Piece generateAndAddPiece(Start startPiece, List<Stronghold.Piece> pieces, JRand rand,
 	                                            int x, int y, int z, Direction facing, int pieceId) {
 		if(pieceId > 50) {
+			startPiece.addPiece(null);
 			return null;
 		} else if(Math.abs(x - startPiece.getBoundingBox().minX) <= 112 && Math.abs(z - startPiece.getBoundingBox().minZ) <= 112) {
 			Stronghold.Piece piece = this.getNextStructurePiece(startPiece, pieces, rand, x, y, z, facing, pieceId + 1);
-			
+			startPiece.addPiece(piece);
 			if(piece != null) {
 				pieces.add(piece);
 
@@ -125,6 +133,7 @@ public class StrongholdGenerator {
 
 			return piece;
 		} else {
+			startPiece.addPiece(null);
 			return null;
 		}
 	}

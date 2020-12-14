@@ -20,9 +20,9 @@ public class SquareRoom extends Stronghold.Piece {
 
 	@Override
 	public void populatePieces(StrongholdGenerator gen, Start start, List<Stronghold.Piece> pieces, JRand rand) {
-		this.method_14874(gen, start, pieces, rand, 4, 1);
-		this.method_14870(gen, start, pieces, rand, 1, 4);
-		this.method_14873(gen, start, pieces, rand, 1, 4);
+		this.method_14874(gen, start, pieces, rand, 4, 1); // forward
+		this.method_14870(gen, start, pieces, rand, 1, 4); // left
+		this.method_14873(gen, start, pieces, rand, 1, 4); // right
 	}
 
 	public static SquareRoom createPiece(List<Stronghold.Piece> pieces, JRand rand, int x, int y, int z, Direction facing, int pieceId) {
